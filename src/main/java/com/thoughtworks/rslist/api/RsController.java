@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
@@ -39,5 +40,16 @@ public class RsController {
         ObjectMapper objectMapper = new ObjectMapper();
         RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
         rsList.add(rsEvent);
+    }
+
+    @PutMapping("/rs/update")
+    public void updateRsEvent(@RequestBody String rsEventString) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        RsEvent rsEventUpdate = objectMapper.readValue(rsEventString, RsEvent.class);
+
+        rsList.forEach(rsEvent -> {
+            if (rsEvent.getEventName().equals(rsEventUpdate.getEventName()))
+                rsEvent.setKeyWord(rsEventUpdate.getKeyWord());
+        });
     }
 }
