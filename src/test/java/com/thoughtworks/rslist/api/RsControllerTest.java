@@ -2,7 +2,10 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,11 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RsControllerTest {
     @Autowired
     MockMvc mockMvc;
 
     @Test
+    @Order(1)
     void should_get_list() throws Exception {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -33,6 +38,7 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(2)
     void should_get_one() throws Exception {
         mockMvc.perform(get("/rs/1"))
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
@@ -49,6 +55,7 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(3)
     void should_get_sub_list() throws Exception {
         mockMvc.perform(get("/rs/list?start=1&end=2"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -73,6 +80,7 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(4)
     void should_add_one_event() throws Exception {
         RsEvent rsEvent = new RsEvent("第四条事件", "国际");
 
@@ -93,6 +101,7 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(5)
     void should_update_one_event() throws Exception {
         int updateIndex = 1;
         RsEvent rsEvent = new RsEvent("第一条事件", "教育");
@@ -110,6 +119,7 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(6)
     void should_delete_one_event() throws Exception {
         int deleteIndex = 1;
         mockMvc.perform(delete("/rs/delete/{index}", deleteIndex))
