@@ -1,8 +1,9 @@
 package com.thoughtworks.rslist.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.domain.Gender;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,9 +15,12 @@ public class RsController {
 
     private List<RsEvent> initList() {
         List<RsEvent> list = new ArrayList<>();
-        list.add(new RsEvent(1, "第一条事件", "经济"));
-        list.add(new RsEvent(2, "第二条事件", "社会"));
-        list.add(new RsEvent(3, "第三条事件", "民生"));
+        list.add(new RsEvent(1, "第一条事件", "经济",
+                new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890")));
+        list.add(new RsEvent(2, "第二条事件", "社会",
+                new User("userB", Gender.FEMALE, 32, "B@aaa.com", "11234567891")));
+        list.add(new RsEvent(3, "第三条事件", "民生",
+                new User("userC", Gender.Transgender, 21, "C@aaa.com", "11234567892")));
         return list;
     }
 

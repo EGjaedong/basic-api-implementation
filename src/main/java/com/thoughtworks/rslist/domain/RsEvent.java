@@ -1,20 +1,33 @@
 package com.thoughtworks.rslist.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+@Data
+// use jackson must have no args constructor
+@NoArgsConstructor
 public class RsEvent {
+    @NotNull
     private int id;
 
+    @NotNull
     private String eventName;
 
+    @NotNull
     private String keyWord;
-    // use jackson must have empty constructor
 
-    public RsEvent() {
-    }
+    @Valid
+    @NotNull
+    private User user;
 
-    public RsEvent(int id, String eventName, String keyWord) {
+    public RsEvent(int id, String eventName, String keyWord, User user) {
         this.id = id;
         this.eventName = eventName;
         this.keyWord = keyWord;
+        this.user = user;
     }
 
     public int getId() {
@@ -39,5 +52,13 @@ public class RsEvent {
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
