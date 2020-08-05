@@ -53,6 +53,7 @@ public class RsController {
 
     @DeleteMapping("/rs/delete/{index}")
     public void deleteRsEventByIndex(@PathVariable int index) throws JsonProcessingException {
-        rsList.remove(index - 1);
+        if (index <= rsList.size())
+            rsList.remove(index - 1);
     }
 }
