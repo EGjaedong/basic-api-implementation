@@ -23,7 +23,7 @@ class UserControllerTest {
 
     @Test
     void should_return_all_user() throws Exception {
-        mockMvc.perform(get("/rs/getUserList"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(3)))
                 .andExpect(jsonPath("$[0]", hasKey("user_name")))
@@ -42,7 +42,7 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("addIndex", "4"));
 
-        mockMvc.perform(get("/rs/getUserList"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$.*", hasSize(4)));
     }
 

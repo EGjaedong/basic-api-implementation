@@ -110,7 +110,7 @@ class RsControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("addIndex", "4"));
 
-        mockMvc.perform(get("/rs/getUserList"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(4)));
 
@@ -178,7 +178,7 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyWord", is("民生")))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/rs/getUserList"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$.*", hasSize(3)));
     }
 

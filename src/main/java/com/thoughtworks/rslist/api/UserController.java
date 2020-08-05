@@ -24,7 +24,7 @@ public class UserController {
                 .header("addIndex", String.valueOf(addIndex)).build();
     }
 
-    @GetMapping("/rs/getUserList")
+    @GetMapping("/users")
     public ResponseEntity<List<User>> getUserList(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
