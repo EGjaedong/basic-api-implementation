@@ -158,8 +158,21 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("民生")))
                 .andExpect(status().isOk());
-        
+
         mockMvc.perform(get("/rs/getUserList"))
                 .andExpect(jsonPath("$.*", hasSize(3)));
+    }
+
+    @Test
+    @Order(8)
+    void should_return_bad_request_when_add_new_event_eventName_is_empty() throws Exception {
+        RsEvent rsEvent = new RsEvent(4, null, "国际",
+                new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rsEventJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

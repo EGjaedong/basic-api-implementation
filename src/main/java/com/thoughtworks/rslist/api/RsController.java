@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.repositories.UserListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public void addOneEvent(@RequestBody RsEvent rsEvent) {
+    public void addOneEvent(@RequestBody @Validated RsEvent rsEvent) {
         User user = rsEvent.getUser();
         if (!userListRepository.isExist(user))
             userListRepository.addUser(user);
@@ -51,7 +52,7 @@ public class RsController {
     }
 
     @PutMapping("/rs/update/{id}")
-    public void updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
+    public void updateRsEventByIndex(@PathVariable int id, @RequestBody @Validated RsEvent rsEventUpdate) {
         if (rsEventUpdate.getEventName() != null)
             rsList.get(id - 1).setEventName(rsEventUpdate.getEventName());
         if (rsEventUpdate.getKeyWord() != null)
