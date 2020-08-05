@@ -39,8 +39,9 @@ public class RsController {
     }
 
     @PutMapping("/rs/update/{id}")
-    public void updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
+    public ResponseEntity updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
         rsService.updateEventById(id, rsEventUpdate);
+        return ResponseEntity.ok().body(null);
     }
 
     @DeleteMapping("/rs/delete/{id}")
