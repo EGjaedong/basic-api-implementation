@@ -82,7 +82,7 @@ class RsControllerTest {
     @Test
     @Order(4)
     void should_add_one_event() throws Exception {
-        RsEvent rsEvent = new RsEvent("第四条事件", "国际");
+        RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String rsEventJson = objectMapper.writeValueAsString(rsEvent);
@@ -103,13 +103,13 @@ class RsControllerTest {
     @Test
     @Order(5)
     void should_update_one_event() throws Exception {
-        int updateIndex = 1;
-        RsEvent rsEvent = new RsEvent("第一条事件", "教育");
+        int reId = 1;
+        RsEvent rsEvent = new RsEvent(1, "第一条事件", "教育");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String rsEventString = objectMapper.writeValueAsString(rsEvent);
 
-        mockMvc.perform(put("/rs/update/{index}", updateIndex).content(rsEventString).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(put("/rs/update/{id}", reId).content(rsEventString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/1"))
@@ -121,8 +121,8 @@ class RsControllerTest {
     @Test
     @Order(6)
     void should_delete_one_event() throws Exception {
-        int deleteIndex = 1;
-        mockMvc.perform(delete("/rs/delete/{index}", deleteIndex))
+        int rsId = 1;
+        mockMvc.perform(delete("/rs/delete/{id}", rsId))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list"))

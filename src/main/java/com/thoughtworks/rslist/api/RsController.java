@@ -14,9 +14,9 @@ public class RsController {
 
     private List<RsEvent> initList() {
         List<RsEvent> list = new ArrayList<>();
-        list.add(new RsEvent("第一条事件", "经济"));
-        list.add(new RsEvent("第二条事件", "社会"));
-        list.add(new RsEvent("第三条事件", "民生"));
+        list.add(new RsEvent(1, "第一条事件", "经济"));
+        list.add(new RsEvent(2, "第二条事件", "社会"));
+        list.add(new RsEvent(3, "第三条事件", "民生"));
         return list;
     }
 
@@ -39,17 +39,17 @@ public class RsController {
         rsList.add(rsEvent);
     }
 
-    @PutMapping("/rs/update/{index}")
-    public void updateRsEventByIndex(@PathVariable int index, @RequestBody RsEvent rsEventUpdate) {
+    @PutMapping("/rs/update/{id}")
+    public void updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
         if (rsEventUpdate.getEventName() != null)
-            rsList.get(index - 1).setEventName(rsEventUpdate.getEventName());
+            rsList.get(id - 1).setEventName(rsEventUpdate.getEventName());
         if (rsEventUpdate.getKeyWord() != null)
-            rsList.get(index - 1).setKeyWord(rsEventUpdate.getKeyWord());
+            rsList.get(id - 1).setKeyWord(rsEventUpdate.getKeyWord());
     }
 
-    @DeleteMapping("/rs/delete/{index}")
-    public void deleteRsEventByIndex(@PathVariable int index) {
-        if (index <= rsList.size())
-            rsList.remove(index - 1);
+    @DeleteMapping("/rs/delete/{id}")
+    public void deleteRsEventByIndex(@PathVariable int id) {
+        if (id <= rsList.size())
+            rsList.remove(id - 1);
     }
 }

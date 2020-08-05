@@ -1,16 +1,28 @@
 package com.thoughtworks.rslist.domain;
 
 public class RsEvent {
-    private String eventName;
-    private String keyWord;
+    private int id;
 
+    private String eventName;
+
+    private String keyWord;
     // use jackson must have empty constructor
+
     public RsEvent() {
     }
 
-    public RsEvent(String eventName, String keyWord) {
+    public RsEvent(int id, String eventName, String keyWord) {
+        this.id = id;
         this.eventName = eventName;
         this.keyWord = keyWord;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEventName() {
