@@ -1,5 +1,7 @@
 package com.thoughtworks.rslist.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +13,8 @@ public class GlobalExceptionHandler {
     private static final String INVALID_RSEVENT_INDEX_ERROR_MESSAGE = "invalid index";
     private static final String INVALID_RSEVENT_POST_PARAM_ERROR_MESSAGE = "invalid param";
     private static final String INVALID_USER_POST_PARAM_ERROR_MESSAGE = "invalid user";
+
+    private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler({InvalidRequestParamException.class, InvalidIndexException.class,
             InvalidPostParamException.class, InvalidUserParamException.class})
@@ -26,6 +30,7 @@ public class GlobalExceptionHandler {
         else if (ex instanceof InvalidUserParamException)
             errorMessage = INVALID_USER_POST_PARAM_ERROR_MESSAGE;
         commonError.setError(errorMessage);
+        logger.error(errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
     }
 }
