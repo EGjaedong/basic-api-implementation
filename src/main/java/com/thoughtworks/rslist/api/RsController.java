@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.service.RsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +15,12 @@ public class RsController {
     private RsService rsService;
 
     @GetMapping("/rs/list")
-    public List<RsEvent> getList(@RequestParam(required = false) Integer start,
-                                 @RequestParam(required = false) Integer end) {
+    public ResponseEntity<List<RsEvent>> getList(@RequestParam(required = false) Integer start,
+                                                @RequestParam(required = false) Integer end) {
         if (null == start || null == end) {
-            return rsService.getAllRs();
+            return ResponseEntity.ok().body(rsService.getAllRs());
         }
-        return rsService.getSubRs(start, end);
+        return ResponseEntity.ok().body(rsService.getSubRs(start, end));
     }
 
     @GetMapping("/rs/{index}")
