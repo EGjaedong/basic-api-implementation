@@ -190,9 +190,22 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void should_return_bad_request_when_add_new_event_user_is_empty() throws Exception {
         RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际", null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rsEventJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(11)
+    void should_return_bad_request_when_add_new_event_user_name_is_empty() throws Exception {
+        RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际",
+                new User(null, Gender.MALE, 43, "D@aaa.com", "11234567893"));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String rsEventJson = objectMapper.writeValueAsString(rsEvent);
