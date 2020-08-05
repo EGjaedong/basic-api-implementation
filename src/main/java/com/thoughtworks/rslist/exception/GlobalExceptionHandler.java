@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         else if (ex instanceof InvalidUserParamException)
             errorMessage = INVALID_USER_POST_PARAM_ERROR_MESSAGE;
         commonError.setError(errorMessage);
-        logger.error(errorMessage);
+        logger.error("Exception:{}: --- {}", ex.getClass(), errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
     }
 }
