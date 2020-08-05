@@ -232,4 +232,11 @@ class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void should_throw_exception_when_get_sub_list_start_less_than_end() throws Exception {
+        mockMvc.perform(get("/rs/list?start=2&end=1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid request param")));
+    }
 }

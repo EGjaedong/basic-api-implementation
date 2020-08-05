@@ -1,17 +1,14 @@
-根据课堂上的demo，完成下面需求
-1. 提供获取某一条热搜事件的接口
-2. 提供能够根据起始参数，获取对应范围内的热搜事件列表的接口
-3. 提供添加热搜事件的接口（事件包含两个字段：事件名称和关键字）
-4. 提供修改某条热搜事件的接口（demo没有展示，请大家自己完成）
-5. 提供删除某条热搜事件的接口（demo没有展示，请大家自己完成）
+### 作业描述
 
-#### 需求4、5详细描述
+#### 重复课堂上的Demo完成练习
+* 给所有接口添加错误处理：
+    1. get /rs/list时对start和end进行校验，如果超出范围则返回 400 {error:"invalid request param"}
+    2. get /rs/{index} 对index进行校验，如果超出范围则返回 400 {error:"invalid index"}
+    3. post /rs/event 对RsEvent进行校验，如果不满足校验规则(User和RsEvent定义的校验规则)，则返回 400 {error:"invalid param"}
+    4. post /user 对User进行校验，如果不满足校验规则，则返回 400 {error:"invalid user"}
+    5. 先阅读：https://www.baeldung.com/spring-boot-logging
+       在我们的exceptionHandler中添加日志，记录下错误的信息（error级别），运行程序试着观察是否有日志打印
+* 先写测试（除了日志）！
 
-* 需求4： 修改某条事件时（通过参数传递的序号，修改列表中对应的事件数据），如果RequestBody只传了eventName没有传keyword那么仅仅只修改eventName
-         如果只传了keyword没有传eventName，那么只修改keyword字段
-         如果两个字段都传了，那么都进行修改
-         
-* 需求5： 通过参数传递的序号，删除列表中对应的某条事件数据
+<span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
 
-
-<span style="color: red"> 注意：所有的需求都请先写测试再写实现 </span> 
