@@ -24,11 +24,11 @@ public class RsController {
     }
 
     @GetMapping("/rs/{index}")
-    public RsEvent getOne(@PathVariable int index) {
+    public ResponseEntity<RsEvent> getOne(@PathVariable int index) {
         if (index > 0)
-            return rsService.getOne(index);
+            return ResponseEntity.ok().body(rsService.getOne(index));
         else
-            return null;
+            return ResponseEntity.ok().body(null);
     }
 
     @PostMapping("/rs/event")
