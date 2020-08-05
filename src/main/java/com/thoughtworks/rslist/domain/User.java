@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -46,6 +47,7 @@ public class User {
         return Objects.hash(name, gender, age, email, phone);
     }
 
+    @JsonProperty("user_name")
     public String getName() {
         return name;
     }
@@ -54,6 +56,7 @@ public class User {
         this.name = name;
     }
 
+    @JsonProperty("user_gender")
     public Gender getGender() {
         return gender;
     }
@@ -62,6 +65,7 @@ public class User {
         this.gender = gender;
     }
 
+    @JsonProperty("user_age")
     public int getAge() {
         return age;
     }
@@ -70,6 +74,7 @@ public class User {
         this.age = age;
     }
 
+    @JsonProperty("user_email")
     public String getEmail() {
         return email;
     }
@@ -78,6 +83,7 @@ public class User {
         this.email = email;
     }
 
+    @JsonProperty("user_phone")
     public String getPhone() {
         return phone;
     }
