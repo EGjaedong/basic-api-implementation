@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.Gender;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.repositories.UserListRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,9 @@ import java.util.List;
 @RestController
 public class RsController {
     private List<RsEvent> rsList = initList();
+
+    @Autowired
+    private UserListRepositories userListRepositories;
 
     private List<RsEvent> initList() {
         List<RsEvent> list = new ArrayList<>();
@@ -40,6 +44,9 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public void addOneEvent(@RequestBody RsEvent rsEvent) {
+        User user = rsEvent.getUser();
+        if (!userListRepositories.isExist(user))
+            userListRepositories.addUser(user);
         rsList.add(rsEvent);
     }
 
