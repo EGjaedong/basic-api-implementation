@@ -196,12 +196,13 @@ class RsControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String rsEventJson = objectMapper.writeValueAsString(rsEvent);*/
 
-        String rsEventJson = "{\"id\":4,\"eventName\":\"null\",\"keyWord\":\"国际\"," +
+        String rsEventJson = "{\"id\":4,\"eventName\":null,\"keyWord\":\"国际\"," +
                 "\"user\":{\"user_name\":\"userA\",\"user_gender\":\"MALE\",\"user_age\":39," +
                 "\"user_email\":\"A@aaa.com\",\"user_phone\":\"11234567890\"}}";
 
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid param")));
     }
 
     @Test
@@ -271,7 +272,7 @@ class RsControllerTest {
     }
 
     @Test
-    void should_return_400_when_add_rsEvent_param_valid_fail(){
+    void should_return_400_when_add_rsEvent_param_valid_fail() {
 
 //        mockMvc.perform(post("/rs/event"))
     }
