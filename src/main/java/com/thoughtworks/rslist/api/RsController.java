@@ -21,18 +21,17 @@ public class RsController {
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getList(@RequestParam(required = false) Integer start,
                                                  @RequestParam(required = false) Integer end) throws InvalidRequestParamException {
-        if (start > end)
-            throw new InvalidRequestParamException("invalid request param");
-        if (null == start || null == end) {
+        if (null == start || null == end)
             return ResponseEntity.ok().body(rsService.getAllRs());
-        }
+        if (start > end)
+            throw new InvalidRequestParamException();
         return ResponseEntity.ok().body(rsService.getSubRs(start, end));
     }
 
     @GetMapping("/rs/{index}")
     public ResponseEntity<RsEvent> getOne(@PathVariable int index) throws InvalidIndexException {
         if (index < 0)
-            throw new InvalidIndexException("invalid index");
+            throw new InvalidIndexException();
         if (index > 0)
             return ResponseEntity.ok().body(rsService.getOne(index));
         else
@@ -56,13 +55,5 @@ public class RsController {
     public ResponseEntity<String> deleteRsEventById(@PathVariable int id) {
         rsService.deleteEventById(id);
         return ResponseEntity.ok().body(null);
-    }
-
-    @ExceptionHandler({InvalidRequestParamException.class, InvalidIndexException.class})
-    public ResponseEntity exceptionHandler(Exception ex){
-        CommonError commonError = new CommonError();
-        String errorMessage = ex.getMessage();
-        commonError.setError(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
     }
 }
