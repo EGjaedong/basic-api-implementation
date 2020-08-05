@@ -12,6 +12,7 @@ public class User {
     @Size(max = 8)
     @NotNull
     private String name;
+    @NotNull
     private Gender gender;
     private int age;
     private String email;
