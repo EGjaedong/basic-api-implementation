@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.thoughtworks.rslist.repositories.RsEventRepository;
+import com.thoughtworks.rslist.repositories.UserListRepository;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -20,13 +22,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RsControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    RsEventRepository rsEventRepository;
+
+    @Autowired
+    UserListRepository userListRepository;
+
+    @BeforeEach
+    void initData(){
+        List<RsEvent> rsList = rsEventRepository.getRsList();
+        rsList.clear();
+        rsList.add(new RsEvent(1, "第一条事件", "经济",
+                new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890")));
+        rsList.add(new RsEvent(2, "第二条事件", "社会",
+                new User("userB", Gender.FEMALE, 32, "B@aaa.com", "11234567891")));
+        rsList.add(new RsEvent(3, "第三条事件", "民生",
+                new User("userC", Gender.Transgender, 21, "C@aaa.com", "11234567892")));
+
+        List<User> userList = userListRepository.getUserList();
+        userList.clear();
+        userList.add(new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890"));
+        userList.add(new User("userB", Gender.FEMALE, 32, "B@aaa.com", "11234567891"));
+        userList.add(new User("userC", Gender.Transgender, 21, "C@aaa.com", "11234567892"));
+    }
+
     @Test
-    @Order(1)
     void should_get_list() throws Exception {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -42,7 +66,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(2)
     void should_get_one() throws Exception {
         mockMvc.perform(get("/rs/1"))
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
@@ -62,7 +85,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(3)
     void should_get_sub_list() throws Exception {
         mockMvc.perform(get("/rs/list?start=1&end=2"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -94,7 +116,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(4)
     void should_add_one_event_with_new_user() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际",
                 new User("UserD", Gender.MALE, 43, "D@aaa.com", "11234567893"));
@@ -125,7 +146,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(5)
     void should_update_one_event() throws Exception {
         int reId = 1;
         RsEvent rsEvent = new RsEvent(1, "第一条事件", "教育", null);
@@ -143,7 +163,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(6)
     void should_delete_one_event() throws Exception {
         int rsId = 1;
         mockMvc.perform(delete("/rs/delete/{id}", rsId))
@@ -158,7 +177,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(7)
     void should_add_one_event_with_exited_user() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际",
                 new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890"));
@@ -188,7 +206,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(8)
     void should_return_bad_request_when_add_new_event_eventName_is_empty() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, null, "国际",
                 new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890"));
@@ -206,7 +223,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(9)
     void should_return_bad_request_when_add_new_event_keyWord_is_empty() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, "第四条事件", null,
                 new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890"));
@@ -223,7 +239,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(10)
     void should_return_bad_request_when_add_new_event_user_is_empty() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际", null);
 
@@ -238,7 +253,6 @@ class RsControllerTest {
     }
 
     @Test
-    @Order(11)
     void should_return_bad_request_when_add_new_event_user_name_is_empty() throws Exception {
         /*RsEvent rsEvent = new RsEvent(4, "第四条事件", "国际",
                 new User(null, Gender.MALE, 43, "D@aaa.com", "11234567893"));
