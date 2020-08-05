@@ -281,10 +281,4 @@ class RsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid index")));
     }
-
-    @Test
-    void should_return_400_when_add_rsEvent_param_valid_fail() {
-
-//        mockMvc.perform(post("/rs/event"))
-    }
 }
