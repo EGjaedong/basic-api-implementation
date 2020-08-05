@@ -16,7 +16,7 @@ public class RsController {
 
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getList(@RequestParam(required = false) Integer start,
-                                                @RequestParam(required = false) Integer end) {
+                                                 @RequestParam(required = false) Integer end) {
         if (null == start || null == end) {
             return ResponseEntity.ok().body(rsService.getAllRs());
         }
@@ -32,20 +32,21 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public ResponseEntity addOneEvent(@RequestBody @Validated RsEvent rsEvent) {
+    public ResponseEntity<String> addOneEvent(@RequestBody @Validated RsEvent rsEvent) {
         int addIndex = rsService.addOneEvent(rsEvent);
         return ResponseEntity.created(null)
                 .header("addIndex", String.valueOf(addIndex)).build();
     }
 
     @PutMapping("/rs/update/{id}")
-    public ResponseEntity updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
+    public ResponseEntity<String> updateRsEventById(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
         rsService.updateEventById(id, rsEventUpdate);
         return ResponseEntity.ok().body(null);
     }
 
     @DeleteMapping("/rs/delete/{id}")
-    public void deleteRsEventByIndex(@PathVariable int id) {
+    public ResponseEntity<String> deleteRsEventById(@PathVariable int id) {
         rsService.deleteEventById(id);
+        return ResponseEntity.ok().body(null);
     }
 }
