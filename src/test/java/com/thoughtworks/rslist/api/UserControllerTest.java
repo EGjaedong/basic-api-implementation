@@ -11,10 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,12 +23,20 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     @Test
+    void should_return_all_user() throws Exception {
+        mockMvc.perform(get("/rs/getUserList"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)));
+    }
+
+    @Test
     void should_add_user() throws Exception {
         User user = new User("zhangsan", Gender.MALE, 20, "a@b.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
         String userString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/rs/addUser").content(userString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated())
+        .andExpect(header().string("addIndex", "4"));
 
         mockMvc.perform(get("/rs/getUserList"))
                 .andExpect(jsonPath("$.*", hasSize(4)));
