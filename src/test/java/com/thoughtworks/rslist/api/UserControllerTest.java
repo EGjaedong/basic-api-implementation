@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
 import com.thoughtworks.rslist.domain.User;
@@ -37,6 +38,15 @@ class UserControllerTest {
     @Test
     void should_return_bad_request_when_userName_to_long() throws Exception {
         User user = new User("zhangsan123", Gender.MALE, 20, "a@b.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userString = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/rs/addUser").content(userString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_return_bad_request_when_userName_is_empty() throws Exception {
+        User user = new User(null, Gender.MALE, 20, "a@b.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
         String userString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/rs/addUser").content(userString).contentType(MediaType.APPLICATION_JSON))
