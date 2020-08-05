@@ -52,7 +52,7 @@ public class RsController {
     }
 
     @PutMapping("/rs/update/{id}")
-    public void updateRsEventByIndex(@PathVariable int id, @RequestBody @Validated RsEvent rsEventUpdate) {
+    public void updateRsEventByIndex(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
         if (rsEventUpdate.getEventName() != null)
             rsList.get(id - 1).setEventName(rsEventUpdate.getEventName());
         if (rsEventUpdate.getKeyWord() != null)
