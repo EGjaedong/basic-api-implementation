@@ -35,16 +35,12 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public void addOneEvent(@RequestBody String rsEventString) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
+    public void addOneEvent(@RequestBody RsEvent rsEvent) {
         rsList.add(rsEvent);
     }
 
     @PutMapping("/rs/update/{index}")
-    public void updateRsEventByIndex(@PathVariable int index, @RequestBody String rsEventString) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        RsEvent rsEventUpdate = objectMapper.readValue(rsEventString, RsEvent.class);
+    public void updateRsEventByIndex(@PathVariable int index, @RequestBody RsEvent rsEventUpdate) {
         if (rsEventUpdate.getEventName() != null)
             rsList.get(index - 1).setEventName(rsEventUpdate.getEventName());
         if (rsEventUpdate.getKeyWord() != null)
@@ -52,7 +48,7 @@ public class RsController {
     }
 
     @DeleteMapping("/rs/delete/{index}")
-    public void deleteRsEventByIndex(@PathVariable int index) throws JsonProcessingException {
+    public void deleteRsEventByIndex(@PathVariable int index) {
         if (index <= rsList.size())
             rsList.remove(index - 1);
     }
