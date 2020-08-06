@@ -18,7 +18,7 @@ public class RsService {
     @Autowired
     private UserRepository userRepository;
 
-    public int addEvent(RsEvent rsEvent){
+    public int addEvent(RsEvent rsEvent) {
         UserEntity userEntity = userRepository.findUserEntityById(rsEvent.getUserId());
         if (userEntity == null)
             return 0;
@@ -33,6 +33,16 @@ public class RsService {
     }
 
     public RsEventEntity findById(int id) {
-        return rsRepository.findById(id);
+        return rsRepository.findRsEventEntityById(id);
+    }
+
+    public RsEventEntity updateById(int id, RsEvent rsEvent) {
+        UserEntity userEntity = userRepository.findUserEntityById(rsEvent.getUserId());
+        if (!(userEntity == null)){
+            RsEventEntity rsEventEntity = RsEventEntity.builder().eventName(rsEvent.getEventName())
+                    .keyword(rsEvent.getKeyWord()).id(id).userEntity(userEntity).build();
+            return rsRepository.save(rsEventEntity);
+        }
+        return null;
     }
 }

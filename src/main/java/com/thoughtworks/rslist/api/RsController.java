@@ -43,10 +43,12 @@ public class RsController {
                 .header("eventId", String.valueOf(eventId)).build();
     }
 
-    @PutMapping("/rs/update/{id}")
-    public ResponseEntity<String> updateRsEventById(@PathVariable int id, @RequestBody RsEvent rsEventUpdate) {
-
-        return ResponseEntity.ok().body(null);
+    @PutMapping("/rs/{rsEventId}")
+    public ResponseEntity<RsEventEntity> updateRsEventById(@PathVariable("rsEventId") int id, @RequestBody RsEvent rsEventUpdate) {
+        RsEventEntity updatedRsEvent = rsService.updateById(id, rsEventUpdate);
+        if (updatedRsEvent == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(updatedRsEvent);
     }
 
     @DeleteMapping("/rs/delete/{id}")

@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
 import com.thoughtworks.rslist.domain.RsEvent;
@@ -17,11 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -147,29 +148,45 @@ class RsControllerTest {
 
     @Test
     void should_add_new_event() throws Exception {
-        UserEntity saved = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
 
-        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + saved.getId() +"}";
+        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + savedUser.getId() +"}";
 
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("eventId", String.valueOf(1)));
+                .andExpect(header().string("eventId", String.valueOf(2)));
 
         List<RsEventEntity> events = rsEventRepository.findAll();
 
         assertEquals(1, events.size());
-        assertEquals(1, events.get(0).getId());
+        assertEquals(2, events.get(0).getId());
     }
 
     @Test
     void should_add_new_event_when_user_not_exist() throws Exception {
-        UserEntity saved = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
 
-        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + 2 +"}";
+        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + 6 +"}";
 
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_update_event_when_user_is_right() throws Exception {
+        UserEntity savedUser = userRepository.save(UserEntity.builder()
+                .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
+
+        RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").userEntity(savedUser).build());
+        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + savedUser.getId() +"}";
+
+        mockMvc.perform(put("/rs/{rsEventId}", savedEvent.getId()).content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        RsEventEntity updated = rsEventRepository.findRsEventEntityById(savedEvent.getId());
+        assertEquals("第二条事件", updated.getEventName());
+        assertEquals("社会", updated.getKeyword());
     }
 }
