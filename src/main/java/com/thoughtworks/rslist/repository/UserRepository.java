@@ -11,4 +11,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     UserEntity findUserEntityById(Integer id);
     @Transactional
     int deleteUserEntityById(Integer id);
+    @Override
+    void deleteAll();
 }

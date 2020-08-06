@@ -16,21 +16,6 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
-
-    @PostMapping("/rs/addUser")
-    public ResponseEntity register(@RequestBody @Validated User user, BindingResult result) throws InvalidUserParamException {
-        if (result.hasErrors())
-            throw new InvalidUserParamException();
-        int addIndex = userService.addOne(user);
-        return ResponseEntity.created(null)
-                .header("addIndex", String.valueOf(addIndex)).build();
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getUserList() {
-        return ResponseEntity.ok().body(userService.getAllUsers());
-    }
-
     @PostMapping("/user")
     public ResponseEntity registerUser(@RequestBody @Validated User user, BindingResult result) throws InvalidUserParamException {
         if (result.hasErrors())

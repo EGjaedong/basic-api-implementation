@@ -3,12 +3,14 @@ package com.thoughtworks.rslist.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Size(max = 8)
     @NotNull

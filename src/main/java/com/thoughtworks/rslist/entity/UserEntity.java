@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @Table(name = "user")
 public class UserEntity {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "name")
     private String userName;
@@ -25,4 +26,6 @@ public class UserEntity {
     private String email;
     private String phone;
     private Integer voteNum;
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "userId")
+    private List<RsEventEntity> events;
 }
