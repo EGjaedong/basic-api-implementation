@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.Vote;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserEntityRepository;
@@ -30,7 +31,9 @@ public class VoteController {
     @GetMapping("/voteRecord")
     public ResponseEntity<List<Vote>> getVoteRecord(@RequestParam int userId,
                                                     @RequestParam int rsEventId,
-                                                    @RequestParam(required = false) int pageIndex) {
+                                                    @RequestParam(required = false) int pageIndex,
+                                                    @RequestParam(required = false) String startTime,
+                                                    @RequestParam(required = false) String endTime) {
         Pageable pageable = PageRequest.of(pageIndex - 1, 5);
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return ResponseEntity.ok(voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId, pageable).stream().map(
@@ -40,13 +43,28 @@ public class VoteController {
 
     @PostMapping("/rs/vote")
     public ResponseEntity<String> voteToRsEvent(@RequestBody Vote vote) {
-        VoteEntity saved = voteRepository.save(VoteEntity.builder()
-                .localDateTime(LocalDateTime.parse(vote.getTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .rsEvent(rsEventRepository.findRsEventEntityById(vote.getRsEventId()))
-                .user(userEntityRepository.findUserEntityById(vote.getUserId()))
-                .num(vote.getVoteNum()).build());
-        if (saved != null)
-            return ResponseEntity.ok().header("message", "vote success").build();
+        UserEntity user = userEntityRepository.findUserEntityById(vote.getUserId());
+        if (user.getVoteNum() >= vote.getVoteNum()){
+            VoteEntity saved = voteRepository.save(VoteEntity.builder()
+                    .localDateTime(LocalDateTime.parse(vote.getTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .rsEvent(rsEventRepository.findRsEventEntityById(vote.getRsEventId()))
+                    .user(userEntityRepository.findUserEntityById(vote.getUserId()))
+                    .num(vote.getVoteNum()).build());
+            if (saved != null)
+                return ResponseEntity.ok().header("message", "vote success").build();
+        }
         return ResponseEntity.badRequest().header("message", "vote fail").build();
+    }
+
+    @GetMapping("/voteBetweenTime")
+    public ResponseEntity<List<Vote>> getVoteRecord(@RequestParam() String startTime,
+                                                    @RequestParam() String endTime){
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime start = LocalDateTime.parse(startTime, df);
+        LocalDateTime end = LocalDateTime.parse(endTime, df);
+        List<VoteEntity> votes = voteRepository.findAllBetweenTime(start, end);
+        return ResponseEntity.ok(votes.stream().map(
+                item -> Vote.builder().voteNum(item.getNum()).userId(item.getUser().getId()).time(df.format(item.getLocalDateTime()))
+                        .rsEventId(item.getRsEvent().getId()).build()).collect(Collectors.toList()));
     }
 }

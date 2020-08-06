@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -130,5 +132,31 @@ class VoteControllerTest {
                 .andExpect(header().string("message", is("vote success")));
     }
 
+    @Test
+    void should_get_vote_record_between_select_time() throws Exception {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String voteTime0 = "2017-09-28 17:07:05";
+        String startTime = "2020-01-01 00:00:00";
 
+        String voteTime1 = "2020-02-02 00:00:00";
+        String voteTime2 = "2020-03-03 00:00:00";
+
+        String endTime = "2020-08-07 00:00:00";
+        String voteTime3 = "2020-10-04 00:00:00";
+        String[] times = {voteTime0, voteTime1, voteTime2, voteTime3};
+
+        for (int i = 0; i < 4; i++) {
+            VoteEntity vote = VoteEntity.builder().num(i+1).user(userEntity).rsEvent(rsEventEntity)
+                    .localDateTime(LocalDateTime.parse(times[i], df)).build();
+            voteEntityRepository.save(vote);
+        }
+
+        mockMvc.perform(get("/voteBetweenTime")
+                .param("startTime", startTime)
+                .param("endTime", endTime))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].userId", is(userEntity.getId())))
+                .andExpect(jsonPath("$[0].rsEventId", is(rsEventEntity.getId())));
+
+    }
 }
