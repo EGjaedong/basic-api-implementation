@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.service;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,11 @@ public class RsService {
     private UserRepository userRepository;
 
     public int addEvent(RsEvent rsEvent){
-        if (!userRepository.findById(rsEvent.getUserId()).isPresent())
+        UserEntity userEntity = userRepository.findUserEntityById(rsEvent.getUserId());
+        if (userEntity == null)
             return 0;
-
         RsEventEntity rsEventEntity = RsEventEntity.builder().eventName(rsEvent.getEventName())
-                .keyword(rsEvent.getKeyWord()).userId(rsEvent.getUserId()).build();
+                .keyword(rsEvent.getKeyWord()).userEntity(userEntity).build();
 
         return rsRepository.save(rsEventEntity).getId();
     }

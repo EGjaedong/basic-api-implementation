@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    @DeleteMapping("/deleteUserById/{id}")
+    @DeleteMapping("/user/{id}")
     public ResponseEntity deleteUserById(@PathVariable() int id) {
         if (userService.deleteUserById(id) == id)
             return ResponseEntity.ok().header("message","user deleted").build();

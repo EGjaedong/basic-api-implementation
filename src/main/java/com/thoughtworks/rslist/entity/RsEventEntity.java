@@ -19,8 +19,6 @@ public class RsEventEntity {
     private Integer id;
     private String eventName;
     private String keyword;
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private UserEntity userEntity;*/
-    private Integer userId;
+    @ManyToOne()
+    private UserEntity userEntity;
 }

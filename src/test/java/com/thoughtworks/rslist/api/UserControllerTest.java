@@ -2,8 +2,11 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,10 +34,14 @@ class UserControllerTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RsEventRepository rsEventRepository;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @AfterEach()
     void clearData() {
+        rsEventRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -146,14 +153,16 @@ class UserControllerTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        User user = new User("userA", Gender.MALE, 39, "A@aaa.com", "11234567890");
-        String userString = objectMapper.writeValueAsString(user);
+        UserEntity savedUser = userRepository.save(UserEntity.builder().userName("user 0").age(30).gender(Gender.MALE)
+                .email("A@B.com").phone("11234567890").build());
+        RsEventEntity rsEventEntity = RsEventEntity.builder().eventName("eventName")
+                .keyword("keyword").userEntity(savedUser).build();
+        rsEventRepository.save(rsEventEntity);
 
-        mockMvc.perform(post("/user").content(userString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(delete("/deleteUserById/{id}", 1))
-                .andExpect(header().string("message", "user deleted"));
+        mockMvc.perform(delete("/user/{id}", savedUser.getId()))
+                .andExpect(status().isOk());
+        assertEquals(0, userRepository.findAll().size());
+        assertEquals(0, rsEventRepository.findAll().size());
     }
 
     @Test
