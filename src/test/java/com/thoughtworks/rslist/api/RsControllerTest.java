@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -178,9 +180,11 @@ class RsControllerTest {
     void should_update_event_when_user_is_right() throws Exception {
         UserEntity savedUser = userRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
+        RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
+        savedUser.setEvents(Collections.singletonList(savedEvent));
+        savedEvent.setUserEntity(savedUser);
 
-        RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").userEntity(savedUser).build());
-        String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + savedUser.getId() +"}";
+        String rsEventJson = "{\"eventName\":\"第二条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + savedUser.getId() +"}";
 
         mockMvc.perform(put("/rs/{rsEventId}", savedEvent.getId()).content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

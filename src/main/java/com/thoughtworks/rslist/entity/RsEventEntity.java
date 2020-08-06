@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,17 @@ public class RsEventEntity {
     private Integer id;
     private String eventName;
     private String keyword;
-    @ManyToOne()
+    @ManyToOne(targetEntity = UserEntity.class)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userEntity;
+
+    @JsonBackReference
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    @JsonBackReference
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
 }
