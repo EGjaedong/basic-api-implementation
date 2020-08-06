@@ -2,15 +2,12 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
-import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
-import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.UserEntityRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +29,7 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    UserRepository userRepository;
+    UserEntityRepository userEntityRepository;
 
     @Autowired
     RsEventRepository rsEventRepository;
@@ -42,7 +39,7 @@ class UserControllerTest {
     @AfterEach()
     void clearData() {
         rsEventRepository.deleteAll();
-        userRepository.deleteAll();
+        userEntityRepository.deleteAll();
     }
 
     @Test
@@ -109,7 +106,7 @@ class UserControllerTest {
         mockMvc.perform(post("/user").content(userString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        List<UserEntity> users = userRepository.findAll();
+        List<UserEntity> users = userEntityRepository.findAll();
 
         assertEquals(1, users.size());
         assertEquals("userA", users.get(0).getUserName());
@@ -153,7 +150,7 @@ class UserControllerTest {
 
     @Test
     void should_delete_user_by_id() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder().userName("user 0").age(30).gender(Gender.MALE)
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder().userName("user 0").age(30).gender(Gender.MALE)
                 .email("A@B.com").phone("11234567890").build());
         RsEventEntity rsEventEntity = RsEventEntity.builder().eventName("eventName")
                 .keyword("keyword").userEntity(savedUser).build();
@@ -161,7 +158,7 @@ class UserControllerTest {
 
         mockMvc.perform(delete("/user/{id}", savedUser.getId()))
                 .andExpect(status().isOk());
-        assertEquals(0, userRepository.findAll().size());
+        assertEquals(0, userEntityRepository.findAll().size());
         assertEquals(0, rsEventRepository.findAll().size());
     }
 

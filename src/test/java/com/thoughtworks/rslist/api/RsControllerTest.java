@@ -1,14 +1,11 @@
 package com.thoughtworks.rslist.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.Gender;
-import com.thoughtworks.rslist.domain.RsEvent;
-import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
-import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.UserEntityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,14 +32,14 @@ class RsControllerTest {
     RsEventRepository rsEventRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserEntityRepository userEntityRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @AfterEach()
     void initData() {
         rsEventRepository.deleteAll();
-        userRepository.deleteAll();
+        userEntityRepository.deleteAll();
     }
 
     @Test
@@ -150,7 +145,7 @@ class RsControllerTest {
 
     @Test
     void should_add_new_event() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
 
         String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + savedUser.getId() +"}";
@@ -167,7 +162,7 @@ class RsControllerTest {
 
     @Test
     void should_add_new_event_when_user_not_exist() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
 
         String rsEventJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + 6 +"}";
@@ -178,7 +173,7 @@ class RsControllerTest {
 
     @Test
     void should_update_event_when_user_is_right() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
         RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
         savedUser.setEvents(Collections.singletonList(savedEvent));
@@ -196,7 +191,7 @@ class RsControllerTest {
 
     @Test
     void should_return_400_in_update_event_when_user_is_empty() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
         RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
         savedUser.setEvents(Collections.singletonList(savedEvent));
@@ -210,7 +205,7 @@ class RsControllerTest {
 
     @Test
     void should_update_event_when_user_is_right_and_keyword_is_empty() throws Exception {
-        UserEntity savedUser = userRepository.save(UserEntity.builder()
+        UserEntity savedUser = userEntityRepository.save(UserEntity.builder()
                 .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
         RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
         savedUser.setEvents(Collections.singletonList(savedEvent));
