@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUserList(){
+    public ResponseEntity<List<User>> getUserList() {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
@@ -41,8 +41,17 @@ public class UserController {
     }
 
     @GetMapping("/findUserById/{id}")
-    public ResponseEntity findUserById(@PathVariable(required = true) int id){
+    public ResponseEntity findUserById(@PathVariable() int id) {
         UserEntity user = userService.findUserById(id);
+        if (user == null)
+            return ResponseEntity.ok().header("message", "user not found").build();
         return ResponseEntity.ok().body(user);
+    }
+
+    @DeleteMapping("/deleteUserById/{id}")
+    public ResponseEntity deleteUserById(@PathVariable() int id) {
+        if (userService.deleteUserById(id) == id)
+            return ResponseEntity.ok().header("message","user deleted").build();
+        return ResponseEntity.ok().header("message", "user not found").build();
     }
 }
