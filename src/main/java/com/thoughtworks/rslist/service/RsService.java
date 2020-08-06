@@ -38,9 +38,13 @@ public class RsService {
 
     public RsEventEntity updateById(int id, RsEvent rsEvent) {
         UserEntity userEntity = userRepository.findUserEntityById(rsEvent.getUserId());
-        if (!(userEntity == null)){
-            RsEventEntity rsEventEntity = RsEventEntity.builder().eventName(rsEvent.getEventName())
-                    .keyword(rsEvent.getKeyWord()).id(id).userEntity(userEntity).build();
+        RsEventEntity oldEvent = rsRepository.findRsEventEntityById(id);
+        if (!(userEntity == null)) {
+            RsEventEntity rsEventEntity = RsEventEntity.builder()
+                    .eventName((rsEvent.getEventName() == null ? oldEvent.getEventName() : rsEvent.getEventName()))
+                    .keyword((rsEvent.getKeyWord() == null ? oldEvent.getKeyword() : rsEvent.getKeyWord()))
+                    .id(id)
+                    .userEntity(userEntity).build();
             return rsRepository.save(rsEventEntity);
         }
         return null;

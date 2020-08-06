@@ -193,4 +193,36 @@ class RsControllerTest {
         assertEquals("第二条事件", updated.getEventName());
         assertEquals("社会", updated.getKeyword());
     }
+
+    @Test
+    void should_return_400_in_update_event_when_user_is_empty() throws Exception {
+        UserEntity savedUser = userRepository.save(UserEntity.builder()
+                .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
+        RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
+        savedUser.setEvents(Collections.singletonList(savedEvent));
+        savedEvent.setUserEntity(savedUser);
+
+        String rsEventJson = "{\"eventName\":\"第二条事件\",\"keyWord\":\"社会\"," +"\"userId\":" + 6 +"}";
+
+        mockMvc.perform(put("/rs/{rsEventId}", savedEvent.getId()).content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_update_event_when_user_is_right_and_keyword_is_empty() throws Exception {
+        UserEntity savedUser = userRepository.save(UserEntity.builder()
+                .userName("user 0").age(20).gender(Gender.MALE).email("0@a.com").phone("11234567890").voteNum(5).build());
+        RsEventEntity savedEvent = rsEventRepository.save(RsEventEntity.builder().eventName("第一条事件").keyword("社会").build());
+        savedUser.setEvents(Collections.singletonList(savedEvent));
+        savedEvent.setUserEntity(savedUser);
+
+        String rsEventJson = "{\"eventName\":\"第二条事件\",\"keyWord\":null," +"\"userId\":" + savedUser.getId() +"}";
+
+        mockMvc.perform(put("/rs/{rsEventId}", savedEvent.getId()).content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        RsEventEntity updated = rsEventRepository.findRsEventEntityById(savedEvent.getId());
+        assertEquals("第二条事件", updated.getEventName());
+        assertEquals("社会", updated.getKeyword());
+    }
 }
